@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./public/main.css">
+</head>
+<body>
+   <input id="nav-toggle" type="checkbox" class="nav-toggle" aria-hidden="true">
+
+  <header class="site-header" role="banner" aria-label="هدر سایت">
+    <div class="container">
+      <a class="brand" href="#">
+        <span class="brand-logo">HZ</span>
+        <span class="brand-text">
+          <strong>اعتراض زمانی</strong>
+          <small class="muted">جوجه خوشگله</small>
+        </span>
+      </a>
+
+      <!-- hamburger label -->
+      <label for="nav-toggle" class="hamburger" aria-hidden="true" title="باز/بسته کردن منو">
+        <span></span><span></span><span></span>
+      </label>
+
+      <nav class="main-nav" role="navigation" aria-label="منوی اصلی">
+        <ul>
+          <li><a href="#">درباره زمانی</a></li>
+          <li class="has-sub">
+            <a href="#" aria-haspopup="true">خدمات سایت</a>
+            <ul class="sub-menu" aria-label="زیرمنوی خدمات">
+              <li><a href="#">خریدن ناز</a></li>
+              <li><a href="#">خرید خوراکی</a></li>
+              <li><a href="#">خرید غذا</a></li>
+              <li><a href="#">رفع قهر</a></li>
+              <li><a href="#">محرومیت موقت </a></li>
+
+
+            </ul>
+          </li>
+          <li class="has-sub"><a href="#">محصولاتی که زمانی دوست دارد</a>
+            <ul class="sub-menu" aria-label="زیرمنوی خدمات">
+              <li><a href="#">شیرکاکائو</a></li>
+              <li><a href="#">پیراشکی</a></li>
+              <li><a href="#">همگرد</a></li>
+              <li><a href="#">آبنبات</a></li>
+              <li><a href="#">ملوچ</a></li>
+              <li><a href="#">بستنی</a></li>
+                            <li><a href="#">جوجه</a></li>
+
+
+
+            </ul>
+          </li>
+          
+       
+          <li><a href="#">بخش قهر کردن</a></li>
+          <li class="cta-li"><a class="btn-cta" href="#">wellcome zamani</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- صفحه نمونه -->
+  <main class="page">
+    <!-- <section class="hero">
+      <div class="container">
+        <h1>سلام 👋</h1>
+        <p>این یک نمونه نوار منو با HTML و CSS جدا است. آن را ذخیره و باز کن.</p>
+      </div>
+    </section> -->
+     <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand-logo  href="#top">HZ</a>
+
+      <nav class="nav" role="navigation" aria-label="منوی اصلی">
+        <ul>
+          <li><a href="#hero">خانه</a></li>
+          <li><a href="#features">ویژگی‌ها</a></li>
+          <li><a href="#gallery">گالری</a></li>
+          <li><a href="#contact">تماس</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- نقطه شروع برای لینک brand -->
+  <div id="top" aria-hidden="true"></div>
+
+  <!-- بخش هیرو با تصویر پس‌زمینه و اورلی -->
+  <section id="hero" class="hero" role="region" aria-label="قسمت معرفی">
+    <div class="hero-overlay">
+      <div class="hero-content container">
+        <h1>خوش آمدی به سایت اعتراضت سرورم میوپاتلا</h1>
+        <p class="lead">این یک سایت ساخته شده برای اعتراضات شما هستش و برای پاسخگویی به اعتراضات و رفع آن در اسرا وقت می باشد</p>
+        <div class="hero-actions">
+          <a class="btn ghost" href="#features">دیدن بیشتر</a>
+          <a class="btn" href="#gallery">گالری</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش ویژگی‌ها -->
+  <section id="features" class="section" role="region" aria-label="ویژگی‌ها">
+    <div class="container">
+      <h2>ویژگی‌ها</h2>
+      <p class="muted">چند توضیح درباره سایت اعتراضات زمانی</p>
+
+      <div class="cards">
+        <article class="card">
+          <h3>ارسال</h3>
+          <p>جهت فهمیدن روش ارسال اعتراض و رفع اعتراض پایین کلیک کن</p>
+          <a class="mini" href="#contact">شروع کن</a>
+        </article>
+
+        <article class="card">
+          <h3>طراحی</h3>
+          <p>طراحی واکنش‌گرا و مناسب موبایل و دسکتاپ.</p>
+          <a class="mini" href="#gallery">مشاهده گالری</a>
+        </article>
+
+        <article class="card">
+          <h3>دسترسی</h3>
+          <p>ساختار معنایی و لینک‌های داخلی برای دسترسی بهتر.</p>
+          <a class="mini" href="#top">بازگشت</a>
+        </article>
+           <article class="card">
+          <h3>طراحی</h3>
+          <p>طراحی واکنش‌گرا و مناسب موبایل و دسکتاپ.</p>
+          <a class="mini" href="#gallery">مشاهده گالری</a>
+        </article>
+     
+      
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش گالری با تصاویر نمونه (از شما می‌خواهد تصاویر را اضافه کنید) -->
+  <section id="gallery" class="section section-alt" role="region" aria-label="گالری">
+    <div class="container">
+      <h2>گالری</h2>
+      <p class="muted">تصاویر نمونه — مسیر فایل را در HTML قرار بده.</p>
+
+      <div class="grid">
+        <figure class="thumb"><img src="./pic/1629971869-نکتار-انگور-سفید-200-میلی-لیتر-سن-ایچ.jpg" alt="نمونه ۱"><figcaption>کد 1</figcaption></figure>
+        <figure class="thumb"><img src="images/photo2.jpg" alt="نمونه ۲"><figcaption>نمونه ۲</figcaption></figure>
+        <figure class="thumb"><img src="images/photo3.jpg" alt="نمونه ۳"><figcaption>نمونه ۳</figcaption></figure>
+        <figure class="thumb"><img src="images/photo3.jpg" alt="نمونه ۳"><figcaption>نمونه ۳</figcaption></figure>
+
+      <p><a class="btn" href="#contact">تماس و درخواست</a></p>
+    </div>
+         <div class="grid">
+        <figure class="thumb"><img src="./pic/1629971869-نکتار-انگور-سفید-200-میلی-لیتر-سن-ایچ.jpg" alt="نمونه ۱"><figcaption>نمونه ۱</figcaption></figure>
+        <figure class="thumb"><img src="images/photo2.jpg" alt="نمونه ۲"><figcaption>نمونه ۲</figcaption></figure>
+        <figure class="thumb"><img src="images/photo3.jpg" alt="نمونه ۳"><figcaption>نمونه ۳</figcaption></figure>
+        <figure class="thumb"><img src="images/photo3.jpg" alt="نمونه ۳"><figcaption>نمونه ۳</figcaption></figure>
+
+      <p style="margin-top:18px;"><a class="btn" href="#contact">تماس و درخواست</a></p>
+    </div>
+  </section>
+
+  <!-- بخش تماس / فرم نمونه (فرم فقط ساختار دارد، پردازش سرور نیاز است) -->
+  <section id="contact" class="section" role="region" aria-label="تماس">
+    <div class="container narrow">
+      <h2>تماس با ما</h2>
+      <p class="muted">فرم زیر فقط نمونه است — برای ارسال نیاز به بک‌اند دارید.</p>
+
+      <form class="form" action="#" method="post" novalidate>
+        <label>
+          نام و نام خانوادگی
+          <input type="text" name="name" required placeholder="مثلاً علی رضایی">
+        </label>
+
+        <label>
+          ایمیل
+          <input type="email" name="email" required placeholder="you@example.com">
+        </label>
+
+        <label>
+          پیام
+          <textarea name="message" rows="5" placeholder="پیام شما..."></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button class="btn" type="submit">ارسال</button>
+          <a class="btn ghost" href="#top">بازگشت به بالا</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p class="muted">© ۲۰۲۵ — ساخته‌شده با ❤️</p>
+    </div>
+  </footer>
+  </main>
+</body>
+</html>
