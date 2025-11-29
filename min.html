@@ -1,69 +1,420 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فرم ارسال به ایمیل</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>فرم زیبا و چندمرحله‌ای</title>
+
+<!-- گوگل فونت (در صورت دسترسی به اینترنت) -->
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-body {
-    font-family: sans-serif;
-    background: linear-gradient(135deg, #0d0d0d, #1c1c1c);
+  :root{
+    --bg1: #0f1724;      /* تیره برای گرادینت */
+    --bg2: #0b1b2b;
+    --card: rgba(255,255,255,0.06);
+    --glass: rgba(255,255,255,0.06);
+    --accent: linear-gradient(135deg,#7b61ff,#3ec5ff);
+    --accent-solid: #6b4bff;
+    --muted: rgba(255,255,255,0.65);
+    --glass-border: rgba(255,255,255,0.08);
+    --success: #2dd4bf;
+    --error: #ff6b6b;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(124,79,255,0.12), transparent),
+                radial-gradient(1000px 500px at 90% 90%, rgba(62,197,255,0.06), transparent),
+                linear-gradient(180deg,var(--bg1),var(--bg2));
     color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    -webkit-font-smoothing:antialiased;
+    padding: 28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
 
-form {
-    background: rgba(255,255,255,0.05);
-    padding: 30px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    width: 350px;
-    box-shadow: 0 0 20px rgba(0,255,255,0.2);
-}
+  /* کانتِینر اصلی */
+  .card {
+    width: 100%;
+    max-width: 520px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    overflow: hidden;
+  }
 
-input, textarea {
-    margin: 10px 0;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #222;
+  .header {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .logo {
+    width:48px;height:48px;border-radius:10px;
+    background: var(--accent);
+    display:grid;place-items:center;
+    box-shadow: 0 6px 22px rgba(107,75,255,0.18);
+    font-weight:700;color:white;
+  }
+  .title {
+    flex:1;
+  }
+  .title h1{margin:0;font-size:18px}
+  .title p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+
+  /* پیشرفت */
+  .progress {
+    height:8px;
+    background: rgba(255,255,255,0.035);
+    border-radius:999px;
+    margin:14px 0 18px;
+    overflow:hidden;
+  }
+  .progress > i {
+    display:block;
+    height:100%;
+    width:0%;
+    background: linear-gradient(90deg,#7b61ff,#3ec5ff);
+    transition: width 500ms cubic-bezier(.2,.9,.24,1);
+  }
+  .steps-indicator {
+    display:flex;
+    gap:8px;
+    justify-content:space-between;
+    margin-bottom:12px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .steps-indicator .step-dot {
+    display:flex;align-items:center;gap:8px;
+  }
+  .steps-indicator .label {opacity:.9}
+
+  /* فرم */
+  form{position:relative}
+  .form-stage {
+    display:grid;
+    gap:12px;
+    transition: transform 420ms cubic-bezier(.2,.9,.24,1), opacity 320ms;
+    will-change: transform, opacity;
+  }
+  .form-stage.hidden { opacity:0; transform: translateX(20px); height:0; overflow:hidden; pointer-events:none; }
+  .form-stage.visible { opacity:1; transform: translateX(0); }
+
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input[type="text"], input[type="email"], textarea, input[type="file"]{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     color: #fff;
     outline: none;
-}
+    font-size:14px;
+  }
+  textarea{min-height:110px;resize:vertical}
+  input:focus, textarea:focus { box-shadow: 0 6px 20px rgba(107,75,255,0.12); border-color: rgba(107,75,255,0.45) }
 
-input[type="file"] {
-    padding: 5px;
-}
+  .row { display:flex; gap:10px; }
+  .row .col { flex:1; }
 
-button {
-    margin-top: 15px;
-    padding: 12px;
-    background: #00e676;
+  /* دکمه‌ها */
+  .actions {
+    display:flex;
+    gap:10px;
+    margin-top:6px;
+    justify-content:space-between;
+  }
+  .btn {
+    padding:10px 14px;
+    border-radius:10px;
     border: none;
-    border-radius: 8px;
-    font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
-}
+    font-weight:600;
+    min-width:110px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .btn--primary {
+    background: linear-gradient(90deg,#7b61ff,#3ec5ff);
+    color: #021027;
+    box-shadow: 0 8px 30px rgba(62,197,255,0.08);
+  }
+  .btn--ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--muted);
+  }
+  .btn:active { transform: translateY(1px) }
 
-button:hover {
-    background: #00c95c;
-}
+  /* پیام‌ها */
+  .alert {
+    margin-top:14px;
+    padding:12px;
+    border-radius:10px;
+    display:none;
+    font-weight:600;
+  }
+  .alert.show { display:block; animation: pop .28s ease both; }
+  @keyframes pop { from { transform: scale(.98); opacity:0 } to { transform:scale(1); opacity:1 } }
+  .alert.success { background: rgba(45,212,191,0.09); color: var(--success); border:1px solid rgba(45,212,191,0.12) }
+  .alert.error { background: rgba(255,107,107,0.08); color: var(--error); border:1px solid rgba(255,107,107,0.12) }
+
+  /* preview فایل */
+  .file-preview {
+    display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;
+    background: rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.03);
+    font-size:13px;color:var(--muted);
+  }
+
+  /* ریسپانسیو موبایل */
+  @media (max-width:520px){
+    body{padding:18px}
+    .card{padding:16px;border-radius:14px}
+    .logo{width:44px;height:44px}
+    .title h1{font-size:16px}
+    .btn{min-width:unset;font-size:15px;padding:12px}
+    .row{flex-direction:column}
+  }
 </style>
 </head>
 <body>
 
-<form action="https://formsubmit.co/hajali131385@gmail.com" method="POST" enctype="multipart/form-data">
-    <input type="text" name="name" placeholder="نام شما" required>
-    <input type="email" name="email" placeholder="ایمیل شما" required>
-    <textarea name="message" rows="4" placeholder="پیام شما" required></textarea>
-    <input type="file" name="attachment" required placeholder="بارگزاری کنید">
-    <button type="submit">ارسال</button>
-</form>
+<div class="card" role="region" aria-label="فرم چند مرحله‌ای زیبا">
+  <div class="header">
+    <div class="logo" aria-hidden="true">FB</div>
+    <div class="title">
+      <h1>فرم  ارسال اعتراض زمانی</h1>
+    </div>
+    <div style="text-align:left;color:var(--muted);font-size:12px">مرحله <span id="currentStepText">1</span>/3</div>
+  </div>
+
+  <div class="progress" aria-hidden="true"><i id="progBar"></i></div>
+  <div class="steps-indicator" aria-hidden="true">
+    <div class="step-dot"><strong>۱</strong><span class="label">اطلاعات</span></div>
+    <div class="step-dot"><strong>۲</strong><span class="label">پیام</span></div>
+    <div class="step-dot"><strong>۳</strong><span class="label">ضمیمه & ارسال</span></div>
+  </div>
+
+  <!-- فرم: مهم --> 
+  <!-- جایگزین کن: your-email@example.com -->
+  <form id="multiForm"
+        action="https://formsubmit.co/hajali131385@gmail.com
+"
+        method="POST"
+        enctype="multipart/form-data"
+        novalidate>
+
+    <!-- تنظیمات FormSubmit -->
+    <input type="hidden" name="_captcha" value="false">
+    <!-- _next اگر می‌خواهی کاربر را به صفحه‌ای هدایت کند؛ ما داخلی نمایش می‌دهیم -->
+    <input type="hidden" name="_next" value="">
+
+    <!-- STAGE 1 -->
+    <div class="form-stage visible" data-step="1" id="stage-1">
+      <label for="name">نام و نام خانوادگی</label>
+      <input id="name" name="name" type="text" placeholder="مثلاً: علی رضایی" required autocomplete="name">
+
+      <label for="email">ایمیل</label>
+      <input id="email" name="email" type="email" placeholder="zamani@gmail.com" required autocomplete="email">
+
+      <div class="actions">
+        <button type="button" class="btn btn--ghost" id="stage1Next">ادامه</button>
+        <button type="button" class="btn btn--ghost" onclick="resetForm()" aria-label="پاک کردن فرم">پاک کردن</button>
+      </div>
+    </div>
+
+    <!-- STAGE 2 -->
+    <div class="form-stage hidden" data-step="2" id="stage-2">
+      <label for="subject">موضوع (اختیاری)</label>
+      <input id="subject" name="subject" type="text" placeholder="موضوع پیام">
+
+      <label for="message">پیام شما</label>
+      <textarea id="message" name="message" placeholder="پیام‌تان را بنویسید..." required></textarea>
+
+      <div class="actions">
+        <button type="button" class="btn btn--ghost" id="stage2Prev">مرحله قبل</button>
+        <button type="button" class="btn btn--primary" id="stage2Next">مرحله بعد</button>
+      </div>
+    </div>
+
+    <!-- STAGE 3 -->
+    <div class="form-stage hidden" data-step="3" id="stage-3">
+      <label>ضمیمه (حداکثر 8 مگابایت)</label>
+      <input id="file" name="file" type="file" aria-describedby="fileHelp" accept="image/*,application/pdf,application/zip" placeholder="...">
+      <div id="filePreview" class="file-preview" style="display:none"></div>
+
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+        <button type="button" class="btn btn--ghost" id="stage3Prev">مرحله قبل</button>
+        <button type="submit" class="btn btn--primary" id="submitBtn">ارسال نهایی</button>
+      </div>
+
+      <div id="spin" style="display:none;margin-top:10px;font-size:13px;color:var(--muted)">در حال ارسال…</div>
+    </div>
+
+  </form>
+
+  <div id="success" class="alert success" role="status" aria-live="polite">✔ پیام شما با موفقیت ارسال شد. سپاس!</div>
+  <div id="error" class="alert error" role="alert" aria-live="assertive">✖ مشکلی پیش آمد. دوباره تلاش کنید.</div>
+</div>
+
+<script>
+  // ---------- پیکربندی و المان‌ها ----------
+  const stages = Array.from(document.querySelectorAll('.form-stage'));
+  let current = 1;
+  const total = stages.length;
+  const prog = document.getElementById('progBar');
+  const currentStepText = document.getElementById('currentStepText');
+  const form = document.getElementById('multiForm');
+  const successBox = document.getElementById('success');
+  const errorBox = document.getElementById('error');
+  const fileInput = document.getElementById('file');
+  const filePreview = document.getElementById('filePreview');
+  const spin = document.getElementById('spin');
+
+  function updateProgress(){
+    const percent = Math.round((current-1)/(total-1)*100);
+    prog.style.width = percent + '%';
+    currentStepText.textContent = current;
+    // افکت کوتاه روی اندیس‌ها (اختیاری)
+  }
+
+  function showStage(n){
+    stages.forEach(s => {
+      const step = parseInt(s.dataset.step,10);
+      if(step === n){
+        s.classList.remove('hidden'); s.classList.add('visible');
+        // انیمیشن ورود: کوچک و fade
+        s.style.transitionDelay = '0ms';
+      } else {
+        s.classList.remove('visible'); s.classList.add('hidden');
+      }
+    });
+    current = n;
+    updateProgress();
+    // اسکرول موبایل برای دید بهتر
+    window.scrollTo({ top: document.body.scrollTop, behavior: 'smooth' });
+  }
+
+  // دکمه‌های مرحله‌بندی
+  document.getElementById('stage1Next').addEventListener('click', () => {
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    // اعتبارسنجی ساده
+    if(!name.value.trim()){ showTempError('لطفاً نام را وارد کنید'); name.focus(); return; }
+    if(!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)){ showTempError('ایمیل معتبر وارد کنید'); email.focus(); return; }
+    showStage(2);
+  });
+
+  document.getElementById('stage2Prev').addEventListener('click', () => showStage(1));
+  document.getElementById('stage2Next').addEventListener('click', () => {
+    const message = document.getElementById('message');
+    if(!message.value.trim()){ showTempError('پیام نباید خالی باشد'); message.focus(); return; }
+    showStage(3);
+  });
+
+  document.getElementById('stage3Prev').addEventListener('click', () => showStage(2));
+
+  function showTempError(text){
+    errorBox.textContent = '✖ ' + text;
+    errorBox.classList.add('show');
+    setTimeout(()=> errorBox.classList.remove('show'), 3500);
+  }
+
+  function resetForm(){
+    form.reset();
+    filePreview.style.display = 'none';
+    filePreview.textContent = '';
+    showStage(1);
+  }
+
+  // ------------- پیش‌نمایش فایل و محدودیت اندازه -------------
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files[0];
+    if(!f){ filePreview.style.display='none'; return; }
+    const maxBytes = 8 * 1024 * 1024; // 8 MB
+    if(f.size > maxBytes){
+      showTempError('حجم فایل نباید بیشتر از 8 مگابایت باشد');
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      return;
+    }
+    // نمایش نام و حجم
+    filePreview.style.display = 'flex';
+    const sizeKB = Math.round(f.size / 1024);
+    filePreview.textContent = `فایل: ${f.name} — ${sizeKB} کیلوبایت`;
+  });
+
+  // ---------- ارسال AJAX (بدون رفرش) ----------
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    successBox.classList.remove('show'); errorBox.classList.remove('show');
+    spin.style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+
+    // اگر خواستی _next را پر کنی به جای نمایش داخلی: form._next.value = "https://example.com/thanks"
+    const fd = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: fd,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      spin.style.display = 'none';
+      document.getElementById('submitBtn').disabled = false;
+
+      // برخی سرویس‌ها پاسخ json می‌دهند؛ برخی ریدایرکت. بررسی کلی:
+      if(response.ok){
+        successBox.classList.add('show');
+        // انیمیشن کوچک برای پاکسازی
+        setTimeout(()=>{ form.reset(); filePreview.style.display='none'; showStage(1); }, 1400);
+      } else {
+        // تلاش برای خواندن پاسخ JSON برای پیام خطا
+        let txt = 'خطا در ارسال. دوباره تلاش کنید';
+        try {
+          const j = await response.json();
+          if(j.error) txt = j.error;
+        } catch {}
+        errorBox.textContent = '✖ ' + txt;
+        errorBox.classList.add('show');
+      }
+    } catch (err){
+      spin.style.display = 'none';
+      document.getElementById('submitBtn').disabled = false;
+      errorBox.textContent = '✖ خطای شبکه. اتصال اینترنت را بررسی کنید.';
+      errorBox.classList.add('show');
+      console.error(err);
+    }
+  });
+
+  // مقداردهی اولیه
+  updateProgress();
+
+  // دسترسی بهتر: حرکت با کلید Enter در بخش‌ها
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      const active = current;
+      if(active === 1) document.getElementById('stage1Next').click();
+      else if(active === 2) document.getElementById('stage2Next').click();
+    }
+  });
+
+  // تابع عمومی برای استفاده در HTML
+  window.resetForm = resetForm;
+</script>
 
 </body>
 </html>

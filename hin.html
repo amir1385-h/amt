@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>معرفی ملکه میوصر</title>
+  <!-- CDN: GSAP و Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
+
+  <style>
+    :root{
+      --bg-900:#071029;
+      --card:rgba(255,255,255,0.06);
+      --glass-border:rgba(255,255,255,0.08);
+      --accent1:#7c3aed;
+      --accent2:#06b6d4;
+      --text:#e6eef8;
+      --muted:rgba(230,238,248,0.7);
+      --glass-gradient:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;padding:0;font-family: 'Vazirmatn', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;background:var(--bg-900);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    }
+
+    /* --- full-canvas background for WebGL --- */
+    #bg-canvas{position:fixed;inset:0;z-index:0;display:block}
+
+    /* layout */
+    .wrap{position:relative;max-width:1200px;margin:48px auto;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start;z-index:1;padding:0 20px}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr;padding-bottom:60px}}
+
+    /* header card (glass) */
+    .hero{
+      background:var(--glass-gradient);
+      border:1px solid var(--glass-border);
+      border-radius:18px;padding:28px;
+      box-shadow:0 10px 40px rgba(2,6,23,0.6);
+      overflow:hidden;position:relative;
+    }
+
+    .eyebrow{font-size:13px;color:var(--muted);letter-spacing:1px}
+    h1{font-size:36px;margin:8px 0 4px;line-height:1}
+    .name{background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+    .desc{color:var(--muted);margin-top:12px;max-width:72%;}
+
+    /* CTA */
+    .cta{display:flex;gap:12px;margin-top:18px}
+    .btn{padding:10px 14px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;text-decoration:none;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+
+    /* stats / chips */
+    .meta{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .meta .chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);font-size:13px}
+
+    /* right column: profile + gallery */
+    aside .card{
+      background:var(--glass-gradient);
+      border:1px solid var(--glass-border);
+      border-radius:16px;padding:18px;
+    }
+    .portrait{width:120px;height:120px;border-radius:14px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:900}
+    .profile-row{display:flex;gap:12px;align-items:center}
+
+    /* gallery grid */
+    .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+    .thumb{height:95px;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s cubic-bezier(.2,.9,.2,1)}
+    .thumb:hover img{transform:scale(1.08)}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.85));z-index:9999}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:92%;max-height:92%;border-radius:12px;box-shadow:0 30px 80px rgba(2,6,23,0.8)}
+
+    /* floating action for social */
+    .socials{display:flex;gap:10px;margin-top:12px}
+    .social{width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+
+    /* responsive */
+    @media(max-width:980px){
+      .wrap{grid-template-columns:1fr}
+      .desc{max-width:100%}
+      .gallery{grid-template-columns:repeat(3,1fr)}
+    }
+    @media(max-width:520px){
+      .gallery{grid-template-columns:repeat(2,1fr)}
+      h1{font-size:28px}
+    }
+
+    /* subtle entrance animations (will be triggered by GSAP) */
+    .pre-hidden{opacity:0;transform:translateY(12px)}
+
+    /* keyboard focus */
+    a:focus{outline:2px solid rgba(124,58,237,0.28);outline-offset:3px}
+
+    /* credit small */
+    .credit{font-size:12px;color:var(--muted);margin-top:18px}
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow pre-hidden">جوجو زمانی</div>
+    <h1 class="pre-hidden"> <span class="name">هانیه زمانی</span></h1>
+    <p class="desc pre-hidden">دختری 3 ساله با زیبا ترین صورت و خوشگلترین لپ های دنیا</p>
+
+    <div class="cta pre-hidden">
+      <a class="btn" href="#contact">Zamani</a>
+      <a class="btn ghost" href="#portfolio">علایق زمانی</a>
+    </div>
+
+    <div class="meta pre-hidden">
+      <div class="chip">پیراشکی</div>
+      <div class="chip">شیر کاکائو</div>
+      <div class="chip">pizza</div>
+      <div class="chip">همگرد</div>
+            <div class="chip">بستنی</div>
+                  <div class="chip">مارشمالو</div>
+                        <div class="chip">پاستیل</div>
+
+
+
+    </div>
+<!-- 
+    <div class="credit pre-hidden">این نسخه شامل GSAP (انیمیشن‌های حرفه‌ای)، Three.js (پس‌زمینه سه‌بعدی) و افکت گلس مورفیسم است.</div> -->
+  </section>
+
+  <aside>
+    <div class="card">
+      <div class="profile-row">
+        <div class="portrait">jojo zamani</div>
+        <div>
+          <div style="font-weight:700">ملقب به میوپاترا بزرگ</div>
+          <div style="color:var(--muted);font-size:13px;margin-top:4px">jojo • Little girl •Beautiful</div>
+        </div>
+      </div>
+
+      <div class="socials">
+        <div class="social" title="Github">🐥</div>
+        <div class="social" title="Dribbble">👩🏻‍💻</div>
+        <div class="social" title="LinkedIn">👸🏻</div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-weight:700">خوشگلترین دختر جهان</div>
+        <div class="gallery">
+          <div class="thumb" data-src="https://picsum.photos/id/1015/1200/800"><img src="./pic/0f4f01a14dcb85eb3844036140724ee55.jpg" alt="photo1"></div>
+          <div class="thumb" data-src="https://picsum.photos/id/1016/1200/800"><img src="./pic/photo_2025-11-29_13-00-40.jpg" alt="photo2"></div>
+          <div class="thumb" data-src="https://picsum.photos/id/1025/1200/800"><img src="./pic/photo_2025-11-29_13-01-23.jpg" alt="photo3"></div>
+          <div class="thumb" data-src="https://picsum.photos/id/1035/1200/800"><img src="./pic/photo_2025-11-29_13-02-46.jpg" alt="photo4"></div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+</main>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lightbox-img" src="" alt="expanded photo">
+</div>
+
+<script>
+  // ---------------------------
+  // GSAP animations (entrance + scroll)
+  // ---------------------------
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.defaults({duration:0.8, ease:"power3.out"});
+
+  // stagger intro
+  gsap.timeline()
+    .to('.pre-hidden', {opacity:1, y:0, stagger:0.12, duration:0.7, ease:'power2.out'});
+
+  // animate gallery thumbs on scroll
+  gsap.utils.toArray('.thumb').forEach((el, i) => {
+    gsap.from(el, {
+      scrollTrigger: {trigger: el, start: 'top 80%'},
+      opacity:0, y:20, duration:0.7, delay: i*0.03
+    });
+  });
+
+  // lightbox open with GSAP
+  const lightbox = document.getElementById('lightbox');
+  const lightImg = document.getElementById('lightbox-img');
+  document.querySelectorAll('.thumb').forEach(t => {
+    t.addEventListener('click', async ()=>{
+      const src = t.dataset.src || t.querySelector('img').src;
+      lightImg.src = src;
+      lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden','false');
+      gsap.fromTo(lightImg, {scale:0.97, opacity:0}, {scale:1, opacity:1, duration:0.5});
+    });
+  });
+  lightbox.addEventListener('click', () => {
+    gsap.to(lightImg, {scale:0.97, opacity:0, duration:0.28, onComplete: ()=>{
+      lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); lightImg.src = '';
+    }});
+  });
+
+  // ---------------------------
+  // Three.js background (soft floating particles + 3D torus)
+  // ---------------------------
+  const canvas = document.getElementById('bg-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 40;
+
+  // soft ambient light
+  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambient);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.4);
+  dir.position.set(10,10,10);
+  scene.add(dir);
+
+  // torus (central subtle 3D shape)
+  const geom = new THREE.TorusKnotGeometry(8, 2.6, 120, 16);
+  const mat = new THREE.MeshStandardMaterial({color:0x7c3aed, metalness:0.2, roughness:0.25, emissive:0x07203a, emissiveIntensity:0.4});
+  const tor = new THREE.Mesh(geom, mat);
+  tor.rotation.x = -0.5;
+  tor.position.set(12, -6, -10);
+  tor.scale.set(0.85,0.85,0.85);
+  scene.add(tor);
+
+  // particle field
+  const particlesCount = 600;
+  const positions = new Float32Array(particlesCount * 3);
+  for(let i=0;i<particlesCount;i++){
+    positions[i*3] = (Math.random()-0.5)*200;
+    positions[i*3+1] = (Math.random()-0.5)*120;
+    positions[i*3+2] = (Math.random()-0.5)*200;
+  }
+  const pGeom = new THREE.BufferGeometry();
+  pGeom.setAttribute('position', new THREE.BufferAttribute(positions,3));
+  const pMat = new THREE.PointsMaterial({size:0.9, color:0xb5c7ff, transparent:true, opacity:0.6});
+  const points = new THREE.Points(pGeom, pMat);
+  scene.add(points);
+
+  // resize handling
+  function onResize(){
+    const w = window.innerWidth; const h = window.innerHeight;
+    renderer.setSize(w,h); camera.aspect = w/h; camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize);
+
+  // subtle parallax on mouse move
+  let mouseX=0, mouseY=0;
+  window.addEventListener('mousemove', (e)=>{
+    const nx = (e.clientX / window.innerWidth) - 0.5;
+    const ny = (e.clientY / window.innerHeight) - 0.5;
+    mouseX = nx; mouseY = ny;
+  });
+
+  // animate
+  const clock = new THREE.Clock();
+  function animate(){
+    const t = clock.getElapsedTime();
+    tor.rotation.y += 0.004 + 0.002*Math.sin(t*0.6);
+    tor.rotation.x += 0.002*Math.cos(t*0.8);
+
+    // particle slow float
+    points.rotation.y = t * 0.02;
+    points.position.x += (mouseX*8 - points.position.x) * 0.02;
+    points.position.y += (-mouseY*5 - points.position.y) * 0.02;
+
+    // subtle camera parallax
+    camera.position.x += (mouseX*12 - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY*8 - camera.position.y) * 0.02;
+    camera.lookAt(new THREE.Vector3(0,0,0));
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // performance: pause rendering when not visible
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){ renderer.setAnimationLoop(null); }
+    else{ animate(); }
+  });
+
+  // ---------------------------
+  // accessibility small tweaks
+  // ---------------------------
+  // keyboard open first gallery
+  const thumbs = document.querySelectorAll('.thumb');
+  thumbs.forEach((t, i) => {
+    t.setAttribute('tabindex','0');
+    t.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') t.click(); });
+  });
+
+  // ---------------------------
+  // small helper: replace gallery images with user uploads (instructions)
+  // ---------------------------
+  /*
+    برای قرار دادن عکس‌های خودتان به‌جای تصاویر نمونه:
+    1) مسیر فایل‌ها را در attribute data-src و تگ <img> به آدرس تصویر خود تغییر دهید.
+    2) یا اگر می‌خواهید از upload استفاده کنید، می‌توانم اسکریپت آپلود ساده (local preview) اضافه کنم.
+  */
+
+</script>
+
+</body>
+</html>
